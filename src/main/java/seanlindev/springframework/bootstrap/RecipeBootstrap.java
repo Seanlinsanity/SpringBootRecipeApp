@@ -1,5 +1,6 @@
 package seanlindev.springframework.bootstrap;
 
+import org.springframework.transaction.annotation.Transactional;
 import seanlindev.springframework.domain.*;
 import seanlindev.springframework.repositories.CategoryRepository;
 import seanlindev.springframework.repositories.RecipeRepository;
@@ -27,6 +28,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     }
 
     @Override
+    @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         recipeRepository.saveAll(getRecipes());
     }
