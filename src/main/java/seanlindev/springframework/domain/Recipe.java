@@ -111,7 +111,7 @@ public class Recipe {
         this.image = image;
     }
 
-    public Notes getNote() {
+    public Notes getNotes() {
         return notes;
     }
 
