@@ -64,4 +64,5 @@ public class RecipeServiceImplTest {
 
         Assertions.assertEquals(recipeService.findById(1L), recipe);
     }
+
 }
