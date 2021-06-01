@@ -11,6 +11,7 @@ import seanlindev.springframework.domain.Recipe;
 import seanlindev.springframework.repositories.RecipeRepository;
 import seanlindev.springframework.repositories.UnitOfMeasureRepository;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Slf4j
@@ -61,11 +62,11 @@ public class IngredientServiceImpl implements IngredientService {
             return new IngredientCommand();
         } else {
             Recipe recipe = recipeOptional.get();
-
+            Long ingredientId = command.getId() == null ? 0 : command.getId();;
             Optional<Ingredient> ingredientOptional = recipe
                     .getIngredients()
                     .stream()
-                    .filter(ingredient -> ingredient.getId() == command.getId())
+                    .filter(ingredient -> ingredient.getId() == ingredientId)
                     .findFirst();
 
             if (ingredientOptional.isPresent()) {
@@ -74,19 +75,27 @@ public class IngredientServiceImpl implements IngredientService {
                 ingredientFound.setAmount(command.getAmount());
                 ingredientFound.setUnitOfMeasure(unitOfMeasureRepository
                         .findById(command.getUnitOfMeasure().getId())
-                        .orElseThrow(() -> new RuntimeException("UOM NOT FOUND"))); //todo address this
+                        .orElseThrow(() -> new RuntimeException("UOM NOT FOUND")));
             } else {
                 //add new Ingredient
-                recipe.addIngredient(ingredientCommandToIngredient.convert(command));
+                Ingredient ingredient = ingredientCommandToIngredient.convert(command);
+                ingredient.setRecipe(recipe);
+                recipe.addIngredient(ingredient);
             }
 
             Recipe savedRecipe = recipeRepository.save(recipe);
 
-            //to do check for fail
-            return ingredientToIngredientCommand.convert(savedRecipe.getIngredients().stream()
-                    .filter(recipeIngredients -> recipeIngredients.getId() == command.getId())
-                    .findFirst()
-                    .get());
+            Optional<Ingredient> savedIngredientOptional = savedRecipe.getIngredients().stream()
+                    .filter(recipeIngredients -> recipeIngredients.getId() == ingredientId)
+                    .findFirst();
+            if (!savedIngredientOptional.isPresent()) {
+                savedIngredientOptional = savedRecipe.getIngredients().stream()
+                        .filter(recipeIngredients -> recipeIngredients.getDescription() == command.getDescription())
+                        .filter(recipeIngredients -> recipeIngredients.getAmount() == command.getAmount())
+                        .filter(recipeIngredients -> recipeIngredients.getUnitOfMeasure().getId() == command.getUnitOfMeasure().getId())
+                        .findFirst();
+            }
+            return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
         }
     }
 }
