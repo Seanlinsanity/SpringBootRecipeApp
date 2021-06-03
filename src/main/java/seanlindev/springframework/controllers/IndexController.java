@@ -2,6 +2,7 @@ package seanlindev.springframework.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import seanlindev.springframework.services.RecipeService;
 
@@ -16,7 +17,7 @@ public class IndexController {
         this.recipeService = recipeService;
     }
 
-    @RequestMapping({"", "/", "/index"})
+    @GetMapping({"", "/", "/index"})
     public String getIndexPage(Model model) {
         model.addAttribute("recipes", recipeService.getRecipes());
         return "index";
