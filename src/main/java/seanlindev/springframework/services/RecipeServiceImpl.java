@@ -7,6 +7,7 @@ import seanlindev.springframework.commands.RecipeCommand;
 import seanlindev.springframework.converters.RecipeCommandToRecipe;
 import seanlindev.springframework.converters.RecipeToRecipeCommand;
 import seanlindev.springframework.domain.Recipe;
+import seanlindev.springframework.exceptions.NotFoundException;
 import seanlindev.springframework.repositories.RecipeRepository;
 
 import java.util.HashSet;
@@ -38,7 +39,7 @@ public class RecipeServiceImpl implements RecipeService {
     public Recipe findById(Long id) {
         Optional<Recipe> recipeOptional = recipeRepository.findById(id);
         if (!recipeOptional.isPresent()) {
-            throw new RuntimeException("Recipe Not Found");
+            throw new NotFoundException("Recipe Not Found");
         }
         return recipeOptional.get();
     }
