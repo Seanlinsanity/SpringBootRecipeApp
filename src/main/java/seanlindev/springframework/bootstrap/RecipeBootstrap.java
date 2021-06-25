@@ -1,5 +1,6 @@
 package seanlindev.springframework.bootstrap;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 import seanlindev.springframework.domain.*;
 import seanlindev.springframework.repositories.CategoryRepository;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Profile({"default"})
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     private final CategoryRepository categoryRepository;
